@@ -22,10 +22,14 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticación", description = "Authentication endpoints")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -34,6 +38,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/signin")
+    @Operation(summary = "Authenticate user and return JWT token")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -54,6 +59,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "Register a new user")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity

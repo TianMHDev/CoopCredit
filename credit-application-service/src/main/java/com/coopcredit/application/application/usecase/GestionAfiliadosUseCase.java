@@ -107,4 +107,9 @@ public class GestionAfiliadosUseCase implements AfiliadoServicePort {
         // Save and return the updated affiliate
         return afiliadoPersistencePort.save(afiliadoExistente);
     }
+
+    @Override
+    public java.util.List<Afiliado> listarAfiliados() {
+        return afiliadoPersistencePort.findAll();
+    }
 }

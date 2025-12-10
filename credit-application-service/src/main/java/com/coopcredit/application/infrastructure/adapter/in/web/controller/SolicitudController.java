@@ -15,15 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/solicitudes")
 @RequiredArgsConstructor
+@Tag(name = "Solicitudes", description = "Credit application management endpoints")
 public class SolicitudController {
 
     private final SolicitudServicePort solicitudServicePort;
     private final SolicitudDtoMapper solicitudDtoMapper;
 
     @PostMapping
+    @Operation(summary = "Register a new credit application", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<SolicitudResponse> registrarSolicitud(
             @Valid @RequestBody SolicitudRequest request) {
 
