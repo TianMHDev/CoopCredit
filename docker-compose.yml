@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: coopcredit-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: coopcredit_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: Tixnn2127*
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  risk-central-mock-service:
+    build: ./risk-central-mock-service
+    container_name: risk-central-mock
+    ports:
+      - "8081:8080"
+    environment:
+      SERVER_PORT: 8080
+
+  credit-application-service:
+    build: ./credit-application-service
+    container_name: credit-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/coopcredit_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Tixnn2127*
+      RISK_CENTRAL_URL: http://risk-central-mock-service:8080/risk-evaluation
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+      risk-central-mock-service:
+        condition: service_started
+
+volumes:
+  db_data:

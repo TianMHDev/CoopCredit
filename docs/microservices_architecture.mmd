@@ -1,0 +1,15 @@
+graph LR
+    Client[Client (Postman/Web)]
+    
+    subgraph "Docker Compose Network"
+        App[credit-application-service]
+        DB[(MySQL Database)]
+        Mock[risk-central-mock-service]
+    end
+    
+    Client -->|HTTP :8080| App
+    App -->|JDBC :3306| DB
+    App -->|HTTP :8080| Mock
+    
+    classDef docker fill:#2496ED,stroke:#333,stroke-width:2px,color:white;
+    class App,DB,Mock docker;

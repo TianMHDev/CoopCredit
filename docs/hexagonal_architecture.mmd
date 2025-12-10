@@ -1,0 +1,51 @@
+graph TD
+    subgraph "External Actors"
+        User[User / Affiliate]
+    end
+
+    subgraph "Credit Application Service (Hexagonal)"
+        
+        subgraph "Adapters In (Web)"
+            SolicitudController[Solicitud Controller]
+            AuthController[Auth Controller]
+        end
+
+        subgraph "Application Layer (Use Cases)"
+            SolicitudUseCase[GestionSolicitudesUseCase]
+            AuthService[Auth Service]
+        end
+
+        subgraph "Domain Layer (Core)"
+            Solicitud[Solicitud]
+            Afiliado[Afiliado]
+            Evaluacion[EvaluacionRiesgo]
+            PortsIn[Input Ports]
+            PortsOut[Output Ports]
+        end
+
+        subgraph "Adapters Out (Infrastructure)"
+            SolicitudRepo[Solicitud Persistence Adapter]
+            RiskAdapter[Risk Central Adapter]
+            DBRepo[JPA Repositories]
+        end
+    end
+
+    subgraph "External Systems"
+        MySQL[(MySQL Database)]
+        RiskMock[Risk Central Mock Service]
+    end
+
+    %% Relationships
+    User -->|HTTP POST /solicitudes| SolicitudController
+    SolicitudController -->|Calls| SolicitudUseCase
+    SolicitudUseCase -->|Implements| PortsIn
+    SolicitudUseCase -->|Uses| Solicitud
+    SolicitudUseCase -->|Uses| PortsOut
+    
+    PortsOut <|.. SolicitudRepo : Implements
+    PortsOut <|.. RiskAdapter : Implements
+    
+    SolicitudRepo -->|Uses| DBRepo
+    DBRepo -->|SQL| MySQL
+    
+    RiskAdapter -->|HTTP POST| RiskMock
