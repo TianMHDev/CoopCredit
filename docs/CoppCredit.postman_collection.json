@@ -1,0 +1,208 @@
+{
+	"info": {
+		"_postman_id": "4e75c578-3f17-4baa-8f69-0a4c22612c95",
+		"name": "CoppCredit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46564277",
+		"_collection_link": "https://sebasdev-7691827.postman.co/workspace/SebasDev's-Workspace~44439da7-b8a6-4236-8920-aae274201bc5/collection/46564277-4e75c578-3f17-4baa-8f69-0a4c22612c95?action=share&source=collection_link&creator=46564277"
+	},
+	"item": [
+		{
+			"name": "Gestion Afiliados",
+			"item": [
+				{
+					"name": "Registrar Afiliado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"documento\": \"12121212\",\n    \"nombre\": \"Sebas Cliente\",\n    \"salario\": 5000.00,\n    \"estado\": \"ACTIVO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/afiliados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"afiliados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Informacion",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"documento\": \"88888888\",\n    \"nombre\": \"sebas cliente\",\n    \"salario\": 5000.00,\n    \"estado\": \"ACTIVO\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/afiliados/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"afiliados",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gestión de Solicitudes de Crédito",
+			"item": [
+				{
+					"name": "Solicitar Credito",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"documentoAfiliado\": \"77777777\",\n    \"montoSolicitado\": 10000.00,\n    \"plazo\": 12,\n    \"tasaPropuesta\": 2.0\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/solicitudes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"solicitudes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth Usuarios",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "logueo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"miUsuario123\",\n  \"password\": \"passwordSeguro\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar el Afiliado (Datos de Negocio)",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtaVVzdWFyaW8xMjMiLCJpYXQiOjE3NjUzNDYxMzcsImV4cCI6MTc2NTQzMjUzN30.Ozjab5idr48TJtDGFiLn7fnZAI7m1__Zdzy_Y_erNhwKGR4cElSg1WYL5vs4mgerz3gRCGEK-OCW0D4sXm8y5A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"documentoAfiliado\": \"miUsuario123\",\n  \"montoSolicitado\": 1000.00,\n  \"plazo\": 12,\n  \"tasaPropuesta\": 2.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/solicitudes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"solicitudes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
