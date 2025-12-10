@@ -139,13 +139,11 @@ mvn spring-boot:run
 *(Below are examples of system usage)*
 
 ### 1. Successful User Registration
-> *[Insert Postman screenshot with 200 OK response at /signup]*
-
+![Diagrama](assets/Captura%20desde%202025-12-10%2011-03-47.png)
 ### 2. Login and Token Retrieval
-> *[Insert Postman screenshot showing the received JWT]*
-
+![Diagrama](assets/Captura%20desde%202025-12-10%2011-07-20.png)
 ### 3. Approved Application Creation
-> *[Insert screenshot of response with status "APPROVED"]*
+![Diagrama](assets/Captura%20desde%202025-12-10%2000-16-43.png)
 
 ---
 
