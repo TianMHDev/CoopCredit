@@ -110,6 +110,6 @@ class GestionSolicitudesUseCaseTest {
 
         // Assert
         assertEquals(EstadoSolicitud.RECHAZADO, resultado.getEstado());
-        assertTrue(resultado.getEvaluacion().getDetalle().contains("Riesgo externo ALTO"));
+        assertTrue(resultado.getEvaluacion().getDetalle().contains("External Risk HIGH"));
     }
 }
