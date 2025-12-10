@@ -15,12 +15,17 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.Set;
+
+import com.coopcredit.application.domain.model.EvaluacionRiesgoResponse;
+import com.coopcredit.application.domain.port.out.RiskCentralPort;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,22 +33,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 class SolicitudIntegrationTest {
-
-        @Container
-        static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
-                        .withDatabaseName("coopcredit_test")
-                        .withUsername("test")
-                        .withPassword("test");
 
         @DynamicPropertySource
         static void configureProperties(DynamicPropertyRegistry registry) {
-                registry.add("spring.datasource.url", mysql::getJdbcUrl);
-                registry.add("spring.datasource.username", mysql::getUsername);
-                registry.add("spring.datasource.password", mysql::getPassword);
+                registry.add("spring.datasource.url", () -> "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL");
+                registry.add("spring.datasource.username", () -> "sa");
+                registry.add("spring.datasource.password", () -> "");
+                registry.add("spring.datasource.driver-class-name", () -> "org.h2.Driver");
+                registry.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.H2Dialect");
                 registry.add("spring.flyway.enabled", () -> "true");
-                // Deshabilitar ddl-auto para que Flyway controle el esquema
                 registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         }
 
@@ -52,6 +51,9 @@ class SolicitudIntegrationTest {
 
         @Autowired
         private ObjectMapper objectMapper;
+
+        @MockBean
+        private RiskCentralPort riskCentralPort;
 
         private String token;
         private final String USERNAME = "afiliado_test_int";
@@ -100,6 +102,14 @@ class SolicitudIntegrationTest {
 
         @Test
         void registrarSolicitud_ShouldSucceed_WhenAuthenticatedAndValid() throws Exception {
+                // Mock External Service
+                EvaluacionRiesgoResponse mockResponse = new EvaluacionRiesgoResponse();
+                mockResponse.setScore(850);
+                mockResponse.setNivelRiesgo("BAJO");
+                mockResponse.setDetalle("Mocked response");
+
+                when(riskCentralPort.evaluateRisk(anyString(), any(), anyInt())).thenReturn(mockResponse);
+
                 SolicitudRequest solicitudRequest = new SolicitudRequest();
                 solicitudRequest.setDocumentoAfiliado(USERNAME);
                 solicitudRequest.setMontoSolicitado(new BigDecimal("1000.00"));
