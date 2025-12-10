@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    participant User as Affiliate User
+    participant API as SolicitudController
+    participant UC as GestionSolicitudesUseCase
+    participant Repo as SolicitudPersistencePort
+    participant Risk as RiskCentralPort
+    participant Mock as Risk Mock Service
+    participant DB as MySQL
+
+    User->>API: POST /api/v1/solicitudes (JWT)
+    API->>UC: registrarSolicitud(solicitud)
+    
+    Note over UC: 0. Validate Security (Own Data)
+    Note over UC: 1. Validate Affiliate Active
+    
+    UC->>Repo: save(solicitud) [State: PENDING]
+    Repo->>DB: INSERT ...
+    
+    UC->>Risk: evaluateRisk(doc, amount, term)
+    Risk->>Mock: POST /risk-evaluation
+    Mock-->>Risk: {score: 800, level: "LOW"}
+    Risk-->>UC: RiskResponse
+    
+    Note over UC: 4. Apply Internal Policies
+    Note over UC: - Check External Risk
+    Note over UC: - Check Seniority (>6 months)
+    Note over UC: - Check Debt Capacity (<40%)
+    
+    alt Policies Passed
+        UC->>UC: Set State = APPROVED
+    else Policies Failed
+        UC->>UC: Set State = REJECTED
+    end
+    
+    UC->>Repo: save(solicitud) [Final State]
+    Repo->>DB: UPDATE ...
+    
+    UC-->>API: Solicitud (with Evaluation)
+    API-->>User: 201 Created (JSON)
