@@ -70,4 +70,11 @@ public class AfiliadoPersistenceAdapter implements AfiliadoPersistencePort {
         return afiliadoJpaRepository.findById(id)
                 .map(afiliadoMapper::toDomain);
     }
+
+    @Override
+    public java.util.List<Afiliado> findAll() {
+        return afiliadoJpaRepository.findAll().stream()
+                .map(afiliadoMapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

@@ -42,4 +42,11 @@ public interface AfiliadoServicePort {
      *                                                                               invalid
      */
     Afiliado editarAfiliado(Long id, Afiliado datosActualizados);
+
+    /**
+     * Lists all registered affiliates.
+     * 
+     * @return list of all affiliates
+     */
+    java.util.List<Afiliado> listarAfiliados();
 }

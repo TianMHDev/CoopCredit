@@ -17,32 +17,26 @@ import javax.validation.Valid;
  * This is the driving adapter that exposes HTTP endpoints for affiliate
  * operations.
  */
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/afiliados")
+@Tag(name = "Afiliados", description = "Affiliate management endpoints")
 public class AfiliadoController {
 
     private final AfiliadoServicePort afiliadoServicePort;
     private final AfiliadoDtoMapper afiliadoDtoMapper;
 
-    /**
-     * Constructor with dependency injection.
-     * 
-     * @param afiliadoServicePort the affiliate service port
-     * @param afiliadoDtoMapper   the DTO mapper
-     */
     public AfiliadoController(AfiliadoServicePort afiliadoServicePort,
             AfiliadoDtoMapper afiliadoDtoMapper) {
         this.afiliadoServicePort = afiliadoServicePort;
         this.afiliadoDtoMapper = afiliadoDtoMapper;
     }
 
-    /**
-     * Registers a new affiliate.
-     * 
-     * @param request the registration request
-     * @return ResponseEntity with the created affiliate
-     */
     @PostMapping
+    @Operation(summary = "Register a new affiliate", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AfiliadoResponse> registrarAfiliado(
             @Valid @RequestBody AfiliadoRegisterRequest request) {
 
@@ -65,14 +59,8 @@ public class AfiliadoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * Updates an existing affiliate.
-     * 
-     * @param id      the affiliate ID
-     * @param request the update request
-     * @return ResponseEntity with the updated affiliate
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Update an existing affiliate", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<AfiliadoResponse> editarAfiliado(
             @PathVariable Long id,
             @Valid @RequestBody AfiliadoUpdateRequest request) {
@@ -85,6 +73,16 @@ public class AfiliadoController {
 
         // Convert domain model to response DTO
         AfiliadoResponse response = afiliadoDtoMapper.toResponse(afiliadoActualizado);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @Operation(summary = "List all affiliates", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<java.util.List<AfiliadoResponse>> listarAfiliados() {
+        java.util.List<AfiliadoResponse> response = afiliadoServicePort.listarAfiliados().stream()
+                .map(afiliadoDtoMapper::toResponse)
+                .collect(java.util.stream.Collectors.toList());
 
         return ResponseEntity.ok(response);
     }

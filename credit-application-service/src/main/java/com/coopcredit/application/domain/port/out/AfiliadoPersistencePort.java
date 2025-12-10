@@ -37,4 +37,11 @@ public interface AfiliadoPersistencePort {
      * @return Optional containing the affiliate if found, empty otherwise
      */
     Optional<Afiliado> findById(Long id);
+
+    /**
+     * Retrieves all affiliates.
+     * 
+     * @return list of all affiliates
+     */
+    java.util.List<Afiliado> findAll();
 }
